@@ -38,6 +38,12 @@ bool LoadInput()
     return 1;
 }
 
+/**
+ * Board is numerated from x = 0, y = 0
+ * to x = 8, y = 8
+ * changeField(x, y, +) goes to next field
+ * changeField(x, y, -) goes to previous field
+ */
 void changeField(int &x, int &y, char z)
 {
     if(z == '+')
@@ -59,6 +65,7 @@ void changeField(int &x, int &y, char z)
 
 bool SolveInput(int counter)
 {
+    //Array that checks if number is in ,,Object"
     //BoolNum[Number][Object][ObjectNumber]
     //Object: {Row, Column, Block}
     char BoolNum[10][3][9];
@@ -79,13 +86,14 @@ bool SolveInput(int counter)
             SudokuSolution[x][y] = SudokuBoard[x][y];
         }
 
-    int x = 0, y = 0;
 
+    //Backtracking until all solutions are checked
+    //or solutions is found
+    int x = 0, y = 0;
     bool isBack = false;
 
     while(true)
     {
-        //PrintBoard(SudokuSolution);
         if(y < 0) return 0;
         if(y > 8)
         { 
@@ -97,6 +105,7 @@ bool SolveInput(int counter)
             isBack = true;
         }
         
+        //Checks if field is given by user
         if(SudokuBoard[x][y] != '0')
         {
             if(isBack)changeField(x, y, '-');
@@ -104,7 +113,7 @@ bool SolveInput(int counter)
             continue;
         }
 
-        //can we increase act field
+        //Checks if current field can be increased
         int act = SudokuSolution[x][y] + 1 - '0';
         int prev = SudokuSolution[x][y] - '0';
         while(act < 10)
@@ -113,10 +122,12 @@ bool SolveInput(int counter)
                 BoolNum[act][1][x] == true or
                 BoolNum[act][2][(x/3)+3*(y/3)] == true)  
                 {
+                    //can not be increased
                     act++; 
                     continue;
                 }
 
+            //can be increased
             BoolNum[act][0][y] = true;
             BoolNum[act][1][x] = true;
             BoolNum[act][2][(x/3)+3*(y/3)] = true;
@@ -131,6 +142,7 @@ bool SolveInput(int counter)
 
         if(act > 9) 
         {   
+            //field was not increased so is reseted
             BoolNum[prev][0][y] = false;
             BoolNum[prev][1][x] = false;
             BoolNum[prev][2][(x/3)+3*(y/3)] = false;
